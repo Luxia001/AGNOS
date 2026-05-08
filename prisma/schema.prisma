@@ -6,7 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // ใส่ไว้ถ้าต้องใช้ Migrate ผ่านพอร์ต 5432 บน Supabase
 }
 
 model patients{
@@ -25,5 +27,4 @@ model patients{
   religion String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
