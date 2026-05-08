@@ -88,6 +88,17 @@ export default function Home() {
             <h2 className="card-title">Vercel</h2>
           </div>
         </div>
+        <div className="card bg-base-100 w-86 h-86 shadow-sm">
+          <figure className="h-full bg-white p-5">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg"
+              className="w-full"
+            />
+          </figure>
+          <div className="card-body">
+            <h2 className="card-title">GitHub</h2>
+          </div>
+        </div>
       </div>
     </div>
   );

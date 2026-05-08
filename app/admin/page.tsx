@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Get_Patients } from "@/services/patients"; // ฟังก์ชัน fetch ปกติที่เราสร้างไว้
+import { patients } from "@prisma/client";
+import { ChevronRight } from "lucide-react";
 
 // 1. ตั้งค่า Supabase Client
 const supabase = createClient(
@@ -11,7 +13,7 @@ const supabase = createClient(
 );
 
 function Admin() {
-  const [patients, setPatients] = useState<any[]>([]);
+  const [patients, setPatients] = useState<patients[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -58,54 +60,31 @@ function Admin() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">รายชื่อผู้ป่วย (Real-time)</h1>
-        <div className="badge badge-success gap-2">Live Update On</div>
+        <h1 className="text-2xl font-bold">รายชื่อผู้ป่วย</h1>
       </div>
-
-      <div className="overflow-x-auto border rounded-lg">
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr className="bg-base-200">
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Gender</th>
-              <th>Nationality</th>
-              <th>Registered At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {patients.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="text-center"
-                >
-                  ไม่มีข้อมูลผู้ป่วย
-                </td>
-              </tr>
-            ) : (
-              patients.map((p, index) => (
-                <tr
-                  key={index}
-                  className="hover animate-in fade-in slide-in-from-top-2"
-                >
-                  <td className="font-semibold">
-                    {p.firstName} {p.lastName}
-                  </td>
-                  <td>{p.email}</td>
-                  <td>{p.phone}</td>
-                  <td>{p.gender}</td>
-                  <td>{p.nationality}</td>
-                  <td className="text-xs text-gray-500">
-                    {new Date(p.createdAt).toLocaleString("th-TH")}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <ul className="list bg-base-100 rounded-box shadow-md">
+        {patients.map((p, index) => (
+          <li
+            className="list-row flex justify-between items-center"
+            key={index}
+          >
+            <div className="">
+              <div>
+                {p.firstName} {p.middleName} {p.lastName}
+              </div>
+              <div className="text-sm">
+                {p.email} | {p.phone}
+              </div>
+              <p className="text-sm">
+                {p.gender} {p.nationality}
+              </p>
+            </div>
+            <button className="btn btn-square btn-primary text-white">
+              <ChevronRight />
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
