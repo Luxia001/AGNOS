@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params; // ต้อง await ก่อนนำมาใช้
+    const { id } = await params;
     const patientId = parseInt(id);
 
     if (isNaN(patientId)) {
