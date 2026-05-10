@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Get_Patients } from "@/services/patients"; // ฟังก์ชัน fetch ปกติที่เราสร้างไว้
 import { patients } from "@prisma/client";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 // 1. ตั้งค่า Supabase Client
 const supabase = createClient(
@@ -34,54 +35,61 @@ function Admin() {
   // 2. ระบบ Real-time ดักฟังข้อมูลใหม่
   useEffect(() => {
     const channel = supabase
-      .channel("realtime-patients") // ชื่อ channel อะไรก็ได้
+      .channel("realtime-patients")
       .on(
         "postgres_changes",
         {
-          event: "INSERT", // ดักเฉพาะตอนมีข้อมูลใหม่
+          event: "INSERT",
           schema: "public",
-          table: "patients", // ชื่อ Table ใน Database ของคุณ
+          table: "patients",
         },
-        (payload) => {
-          console.log("New Patient Detected!", payload.new);
+        () => {
           fetchData();
         },
       )
       .subscribe();
 
-    // ทำความสะอาดเมื่อปิดหน้าเว็บ
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
 
-  if (loading) return <div className="p-10">กำลังโหลดข้อมูล...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-spinner text-primary"></span>
+        <p className="ml-2 text-cyan-500">กำลังโหลดข้อมูล...</p>
+      </div>
+    );
 
   return (
-    <div className="p-8">
+    <div className=" text-blue-500 p-5">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">รายชื่อผู้ป่วย</h1>
       </div>
-      <ul className="list bg-base-100 rounded-box shadow-md">
+      <ul className="list rounded-box shadow-md">
         {patients.map((p, index) => (
           <li
-            className="list-row flex justify-between items-center"
-            key={index}
+            className="list-row flex justify-between items-center border-b border-gray-200 text-slate-600 "
+            key={p.id}
           >
-            <div className="">
+            <div className="text-sm">
               <div>
                 {p.firstName} {p.middleName} {p.lastName}
               </div>
-              <div className="text-sm">
+              <div className="text-xs text-gray-500">
                 {p.email} | {p.phone}
               </div>
-              <p className="text-sm">
+              <p className="text-xs">
                 {p.gender} {p.nationality}
               </p>
             </div>
-            <button className="btn btn-square btn-primary text-white">
+            <Link
+              href={`/patient/${p.id}`}
+              className="btn btn-square btn-primary text-white"
+            >
               <ChevronRight />
-            </button>
+            </Link>
           </li>
         ))}
       </ul>

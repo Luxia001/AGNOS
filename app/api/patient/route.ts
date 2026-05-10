@@ -1,18 +1,17 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server"; // ตรวจสอบ path ของ prisma client ของคุณ
+import { NextResponse } from "next/server";
 
 // 📥 GET: ดึงข้อมูลรายชื่อผู้ป่วยทั้งหมด
 export async function GET() {
   try {
     const patients = await prisma.patients.findMany({
       orderBy: {
-        createdAt: "desc", // เรียงจากใหม่ไปเก่า
+        createdAt: "desc",
       },
     });
 
     return NextResponse.json(patients, { status: 200 });
   } catch (error) {
-    // console.error("GET_PATIENTS_ERROR:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

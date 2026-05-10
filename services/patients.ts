@@ -1,5 +1,5 @@
-// 1. กำหนดโครงสร้างข้อมูล (Type Definition)
 export interface PatientInput {
+  id?: number;
   firstName: string;
   middleName?: string;
   lastName: string;
@@ -38,9 +38,19 @@ export const Post_Patient = async (data: PatientInput) => {
   }
 };
 
-// 3. ฟังก์ชัน Get_Patients (แถมให้สำหรับหน้า Admin)
 export const Get_Patients = async () => {
   const response = await fetch("/api/patient");
   if (!response.ok) throw new Error("Failed to fetch patients");
   return response.json();
+};
+
+export const Get_Patient_By_Id = async (id: number) => {
+  const response = await fetch(`/api/patient/${id}`);
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.error || "Failed to fetch patient detail");
+  }
+
+  return result;
 };
